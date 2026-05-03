@@ -1,0 +1,17 @@
+# ninja log v7
+5	496	1777830459737442204	krunner_notion_tasks_autogen/timestamp	3b94523bd96e7c4d
+5	496	1777830459737442204	krunner_notion_tasks_autogen/mocs_compilation.cpp	3b94523bd96e7c4d
+5	496	1777830459737442204	/work/krunner-notion-tasks/build/krunner_notion_tasks_autogen/timestamp	3b94523bd96e7c4d
+5	496	1777830459737442204	/work/krunner-notion-tasks/build/krunner_notion_tasks_autogen/mocs_compilation.cpp	3b94523bd96e7c4d
+5	540	1777830614008213644	kcm_notion_tasks_autogen/timestamp	ab600fed52421ab3
+5	540	1777830614008213644	kcm_notion_tasks_autogen/mocs_compilation.cpp	ab600fed52421ab3
+5	540	1777830614008213644	/work/krunner-notion-tasks/build/kcm_notion_tasks_autogen/timestamp	ab600fed52421ab3
+5	540	1777830614008213644	/work/krunner-notion-tasks/build/kcm_notion_tasks_autogen/mocs_compilation.cpp	ab600fed52421ab3
+496	2898	1777830067588353577	CMakeFiles/krunner_notion_tasks.dir/krunner_notion_tasks_autogen/mocs_compilation.cpp.o	4f500dbcd23d6b68
+553	3002	1777825558565614360	CMakeFiles/kcm_notion_tasks.dir/kcm_notion_tasks_autogen/mocs_compilation.cpp.o	acafb50ed7353ffd
+3	14	1777824822147679122	CMakeFiles/clean.additional	ed445553f391cc45
+14	20	1777824822158679318	clean	7adf74806070bde8
+496	4345	1777830460230025869	CMakeFiles/krunner_notion_tasks.dir/src/notionrunner.cpp.o	b4eee1e303770407
+4345	4525	1777830464077460306	bin/kf6/krunner/krunner_notion_tasks.so	e6b6bee33b95bc3d
+540	3623	1777830614543933156	CMakeFiles/kcm_notion_tasks.dir/src/config/notionconfig.cpp.o	4be2ed05178d48c3
+3623	3898	1777830617626234597	bin/kf6/krunner/kcms/kcm_notion_tasks.so	a6db0949273cd9fa

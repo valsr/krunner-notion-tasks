@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>NotionConfig</class>
+ <widget class="QWidget" name="NotionConfig">
+  <property name="geometry">
+   <rect><x>0</x><y>0</y><width>560</width><height>440</height></rect>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="connectionGroup">
+     <property name="title"><string>Connection</string></property>
+     <layout class="QFormLayout" name="connForm">
+      <property name="rowWrapPolicy"><enum>QFormLayout::WrapLongRows</enum></property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="tokenLabel">
+        <property name="text"><string>Notion Token:</string></property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="tokenEdit">
+        <property name="echoMode"><enum>QLineEdit::Password</enum></property>
+        <property name="placeholderText"><string>ntn_…</string></property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="dbIdLabel">
+        <property name="text"><string>Tasks Data Source ID:</string></property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="dbIdEdit"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="behaviourGroup">
+     <property name="title"><string>Behaviour</string></property>
+     <layout class="QFormLayout" name="runForm">
+      <property name="rowWrapPolicy"><enum>QFormLayout::WrapLongRows</enum></property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="keywordLabel">
+        <property name="text"><string>Trigger keywords:</string></property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="keywordEdit">
+        <property name="placeholderText"><string>task,todo</string></property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="projectLabel">
+        <property name="text"><string>Default project:</string></property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="projectEdit">
+        <property name="placeholderText"><string>Todos  (leave blank to skip)</string></property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="templateLabel">
+        <property name="text"><string>Template page ID:</string></property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="templateEdit">
+        <property name="placeholderText"><string>32-char page ID  (leave blank to skip)</string></property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="advancedGroup">
+     <property name="title"><string>Advanced (only change for a different workspace)</string></property>
+     <property name="checkable"><bool>true</bool></property>
+     <property name="checked"><bool>false</bool></property>
+     <layout class="QFormLayout" name="advForm">
+      <property name="rowWrapPolicy"><enum>QFormLayout::WrapLongRows</enum></property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="projectsDbLabel">
+        <property name="text"><string>Projects Database ID:</string></property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="projectsDbEdit"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="testLayout">
+     <item>
+      <widget class="QPushButton" name="testDbBtn">
+       <property name="text"><string>Test connection</string></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="statusLabel">
+       <property name="text"><string></string></property>
+       <property name="wordWrap"><bool>true</bool></property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation"><enum>Qt::Vertical</enum></property>
+     <property name="sizeHint" stdset="0">
+      <size><width>20</width><height>40</height></size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+</ui>

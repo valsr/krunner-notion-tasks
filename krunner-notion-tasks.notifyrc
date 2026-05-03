@@ -1,0 +1,15 @@
+[Global]
+IconName=task-new
+Comment=Notion Tasks KRunner Plugin
+Name=Notion Tasks
+
+[Event/taskAdded]
+Name=Task Added
+Comment=A new task was added to Notion
+Action=Popup
+
+[Event/taskError]
+Name=Task Error
+Comment=Failed to add a task to Notion
+Action=Popup
+Urgency=high

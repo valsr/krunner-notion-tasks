@@ -1,0 +1,120 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install",
+			"kcoreaddons_add_plugin"
+		],
+		"files" : 
+		[
+			"/usr/lib/cmake/KF6CoreAddons/KF6CoreAddonsMacros.cmake",
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 21,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 68,
+				"parent" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 35,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 68,
+				"parent" : 3
+			},
+			{
+				"command" : 0,
+				"file" : 1,
+				"line" : 50,
+				"parent" : 0
+			}
+		]
+	},
+	"codemodelVersion" : 
+	{
+		"major" : 2,
+		"minor" : 10
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 2,
+			"component" : "krunner-notion-tasks",
+			"destination" : "/home/rado/.local/lib/qt6/plugins/kf6/krunner",
+			"paths" : 
+			[
+				"bin/kf6/krunner/krunner_notion_tasks.so"
+			],
+			"targetId" : "krunner_notion_tasks::@6890427a1f51a3e7e1df",
+			"targetIndex" : 4,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 2,
+			"component" : "krunner-notion-tasks",
+			"cxxModuleBmiTarget" : 
+			{
+				"id" : "krunner_notion_tasks::@6890427a1f51a3e7e1df",
+				"index" : 4
+			},
+			"destination" : "/home/rado/.local/lib/qt6/plugins/kf6/krunner",
+			"type" : "cxxModuleBmi"
+		},
+		{
+			"backtrace" : 4,
+			"component" : "krunner-notion-tasks",
+			"destination" : "/home/rado/.local/lib/qt6/plugins/kf6/krunner/kcms",
+			"paths" : 
+			[
+				"bin/kf6/krunner/kcms/kcm_notion_tasks.so"
+			],
+			"targetId" : "kcm_notion_tasks::@6890427a1f51a3e7e1df",
+			"targetIndex" : 1,
+			"type" : "target"
+		},
+		{
+			"backtrace" : 4,
+			"component" : "krunner-notion-tasks",
+			"cxxModuleBmiTarget" : 
+			{
+				"id" : "kcm_notion_tasks::@6890427a1f51a3e7e1df",
+				"index" : 1
+			},
+			"destination" : "/home/rado/.local/lib/qt6/plugins/kf6/krunner/kcms",
+			"type" : "cxxModuleBmi"
+		},
+		{
+			"backtrace" : 5,
+			"component" : "krunner-notion-tasks",
+			"destination" : "/home/rado/.local/share/knotifications6",
+			"paths" : 
+			[
+				"krunner-notion-tasks.notifyrc"
+			],
+			"type" : "file"
+		}
+	],
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	}
+}

@@ -1,0 +1,15 @@
+/work/krunner-notion-tasks/build/CMakeFiles/uninstall.dir
+/work/krunner-notion-tasks/build/CMakeFiles/fetch-translations.dir
+/work/krunner-notion-tasks/build/CMakeFiles/krunner_notion_tasks.dir
+/work/krunner-notion-tasks/build/CMakeFiles/kcm_notion_tasks.dir
+/work/krunner-notion-tasks/build/CMakeFiles/test.dir
+/work/krunner-notion-tasks/build/CMakeFiles/edit_cache.dir
+/work/krunner-notion-tasks/build/CMakeFiles/rebuild_cache.dir
+/work/krunner-notion-tasks/build/CMakeFiles/list_install_components.dir
+/work/krunner-notion-tasks/build/CMakeFiles/install.dir
+/work/krunner-notion-tasks/build/CMakeFiles/install/local.dir
+/work/krunner-notion-tasks/build/CMakeFiles/install/strip.dir
+/work/krunner-notion-tasks/build/CMakeFiles/krunner_notion_tasks_autogen_timestamp_deps.dir
+/work/krunner-notion-tasks/build/CMakeFiles/krunner_notion_tasks_autogen.dir
+/work/krunner-notion-tasks/build/CMakeFiles/kcm_notion_tasks_autogen_timestamp_deps.dir
+/work/krunner-notion-tasks/build/CMakeFiles/kcm_notion_tasks_autogen.dir

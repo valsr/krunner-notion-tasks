@@ -1,13 +1,67 @@
-# You can override the included template(s) by including variable overrides
-# SAST customization: https://docs.gitlab.com/user/application_security/sast/#available-cicd-variables
-# Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure/
-# Dependency Scanning customization: https://docs.gitlab.com/user/application_security/dependency_scanning/dependency_scanning_sbom/#customizing-analyzer-behavior
-# Container Scanning customization: https://docs.gitlab.com/user/application_security/container_scanning/#customizing-analyzer-behavior
-# Note that environment variables can be set in several places
-# See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
 stages:
-- test
-- secret-detection
+  - build
+  - test
+  - secret-detection
+  - package
+
+default:
+  image: archlinux:latest
+  before_script:
+    - pacman -Syu --noconfirm
+    - pacman -S --noconfirm --needed
+        cmake gcc make
+        extra-cmake-modules
+        qt6-base
+        krunner kcmutils ki18n knotifications
+
+# ── Build ──────────────────────────────────────────────────────────────────────
+
+build:
+  stage: build
+  script:
+    - cmake -B build -S .
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_INSTALL_PREFIX=/usr
+    - cmake --build build --parallel
+    - DESTDIR=pkg cmake --install build
+    # Smoke-test: plugin must appear in the list
+    - |
+      QT_PLUGIN_PATH="$PWD/pkg/usr/lib/qt6/plugins" \
+      XDG_DATA_DIRS="$PWD/pkg/usr/share:$XDG_DATA_DIRS" \
+      krunner --list 2>/dev/null | grep -q "krunner_notion_tasks"
+  artifacts:
+    paths:
+      - pkg/
+    expire_in: 1 week
+
+# ── Package (tags only) ────────────────────────────────────────────────────────
+
+package:tarball:
+  stage: package
+  needs: [build]
+  script:
+    - tar czf "krunner-notion-tasks-${CI_COMMIT_TAG}.tar.gz" -C pkg .
+  artifacts:
+    name: "krunner-notion-tasks-${CI_COMMIT_TAG}"
+    paths:
+      - "krunner-notion-tasks-*.tar.gz"
+  rules:
+    - if: $CI_COMMIT_TAG
+
+package:source:
+  stage: package
+  needs: []
+  script:
+    - git archive --format=tar.gz --prefix="krunner-notion-tasks-${CI_COMMIT_TAG}/"
+        -o "krunner-notion-tasks-${CI_COMMIT_TAG}-src.tar.gz" HEAD
+  artifacts:
+    name: "krunner-notion-tasks-${CI_COMMIT_TAG}-src"
+    paths:
+      - "krunner-notion-tasks-*-src.tar.gz"
+  rules:
+    - if: $CI_COMMIT_TAG
+
+# ── Test ───────────────────────────────────────────────────────────────────────
 sast:
   stage: test
 include:
@@ -15,5 +69,7 @@ include:
 - template: Security/Secret-Detection.gitlab-ci.yml
 variables:
   SECRET_DETECTION_ENABLED: 'true'
+
+# ── Secret Detection ─────────────────────────────────────────────────────────
 secret_detection:
   stage: secret-detection
