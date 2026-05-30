@@ -4,8 +4,7 @@
         "Description": "Add tasks to your Notion database",
         "Icon": "task-new",
         "License": "GPL-2.0-or-later",
-        "EnabledByDefault": true,
-        "Id": "krunner_notion_tasks"
+        "EnabledByDefault": true
     },
     "X-Plasma-API-Minimum-Version": "6.0",
     "X-KDE-ConfigModule": "kf6/krunner/kcms/kcm_notion_tasks"
