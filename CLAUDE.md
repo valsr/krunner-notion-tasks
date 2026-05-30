@@ -11,7 +11,7 @@ Two compiled shared libraries, both installed as KDE plugins:
 
 The runner's JSON metadata (`src/notionrunner.json`) contains `"X-KDE-ConfigModule": "kf6/krunner/kcms/kcm_notion_tasks"` at the top level — this is what makes the wrench icon appear in KRunner settings.
 
-Both plugins read/write `~/.config/krunner-notion-tasksrc` via `KSharedConfig`.
+Both plugins read/write `~/.config/krunner-notion-tasks.conf` via `KSharedConfig`.
 
 ## Build & install
 
@@ -37,18 +37,29 @@ Modifiers:
 
 ## Config
 
-Config file: `~/.config/krunner-notion-tasksrc`
+Config file: `~/.config/krunner-notion-tasks.conf`
 
 ```ini
 [notion]
+# Your Notion internal integration token (starts with "ntn") See README.md for how to create one and share your
+# database with it.
 token=ntn_...
-data_source_id=<32-char tasks DB ID>
+
+# Tasks database ID (default is pre-filled)
+database_id=<32-char tasks DB ID>
+
+# Projects database ID — used to look up your default project by name
 projects_database_id=<32-char projects DB ID>
 
 [runner]
-keyword=task,todo          # comma-separated list of trigger keywords
-default_project=Todos      # name matched against Projects DB; leave blank to skip
-template_id=               # template page ID passed to Notion page creation
+# Trigger keyword in KRunner — e.g. "todo buy milk !high @today"
+keyword=task,todo
+
+# Name of the project to assign new tasks to (leave blank to skip)
+default_project=Todos
+
+# Page ID of the Notion template to apply to new tasks (leave blank to skip). Default is the "Todo" task template.
+template_id=<32-char template page ID>
 ```
 
 Sprint assignment is handled by a Notion automation — the plugin does not assign sprints.

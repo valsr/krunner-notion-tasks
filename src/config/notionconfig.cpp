@@ -18,7 +18,7 @@
 
 K_PLUGIN_CLASS_WITH_JSON(NotionConfig, "notionconfig.json")
 
-static const QString CFG_FILE        = QStringLiteral("krunner-notion-tasksrc");
+static const QString CFG_FILE = QStringLiteral("krunner-notion-tasks.conf");
 static const QString CFG_NOTION      = QStringLiteral("notion");
 static const QString CFG_RUNNER      = QStringLiteral("runner");
 static const QString NOTION_VER      = QStringLiteral("2022-06-28");

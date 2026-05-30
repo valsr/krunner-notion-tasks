@@ -22,7 +22,7 @@ K_PLUGIN_CLASS_WITH_JSON(NotionRunner, "notionrunner.json")
 
 static constexpr int PROJECT_TTL = 1800;
 
-static const QString CFG_FILE = QStringLiteral("krunner-notion-tasksrc");
+static const QString CFG_FILE = QStringLiteral("krunner-notion-tasks.conf");
 static const QString CFG_NOTION = QStringLiteral("notion");
 static const QString CFG_RUNNER = QStringLiteral("runner");
 static const QString NOTION_VER = QStringLiteral("2025-09-03");
@@ -59,7 +59,7 @@ NotionRunner::Config NotionRunner::loadConfig() const
 
     return {
         .token = notion.readEntry("token", QString()),
-        .databaseId = notion.readEntry("data_source_id", DEF_DB_ID),
+        .databaseId = notion.readEntry("database_id", DEF_DB_ID),
         .projectsDbId = notion.readEntry("projects_database_id", DEF_PROJECTS_ID),
         .keywords = keywords,
         .defaultProject = runner.readEntry("default_project", DEF_PROJECT),
@@ -243,8 +243,8 @@ ApiResult<bool> NotionRunner::addNotionTask(const Config &cfg, const ParsedQuery
 
     QJsonObject payload{
         {QStringLiteral("parent"),
-         QJsonObject{{QStringLiteral("type"), QStringLiteral("data_source_id")},
-                     {QStringLiteral("data_source_id"), toUuid(cfg.databaseId)}}},
+         QJsonObject{{QStringLiteral("type"), QStringLiteral("database_id")},
+                     {QStringLiteral("database_id"), toUuid(cfg.databaseId)}}},
         {QStringLiteral("properties"), properties},
     };
 
