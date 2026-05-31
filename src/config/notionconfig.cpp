@@ -38,29 +38,6 @@ static QString toUuid(const QString &id)
         .arg(s.mid(0,8), s.mid(8,4), s.mid(12,4), s.mid(16,4), s.mid(20));
 }
 
-static ApiResult<QByteArray> notionGet(const QString &token, const QString &path)
-{
-    QNetworkAccessManager nam;
-    nam.setTransferTimeout(10000);
-    QNetworkRequest req(QUrl(QStringLiteral("https://api.notion.com/v1/") + path));
-    req.setRawHeader("Authorization", QByteArrayLiteral("Bearer ") + token.toUtf8());
-    req.setRawHeader("Notion-Version", NOTION_VER.toUtf8());
-    QNetworkReply *reply = nam.get(req);
-    QEventLoop loop;
-    QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    loop.exec();
-    const QByteArray result = reply->readAll();
-    if (reply->error() != QNetworkReply::NoError) {
-        const QJsonDocument doc = QJsonDocument::fromJson(result);
-        const QString msg = doc.object().value(QStringLiteral("message")).toString();
-        const QString fallback = reply->errorString();
-        reply->deleteLater();
-        return ApiResult<QByteArray>::err(msg.isEmpty() ? fallback : msg);
-    }
-    reply->deleteLater();
-    return ApiResult<QByteArray>::ok(result);
-}
-
 static ApiResult<QByteArray> notionPost(const QString &token, const QString &path,
                                          const QByteArray &body)
 {

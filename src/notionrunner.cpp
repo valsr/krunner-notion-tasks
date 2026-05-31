@@ -182,7 +182,7 @@ QVariant NotionRunner::cached(const QString &key, int ttlSecs, Fn &&fn)
     {
         QMutexLocker lock(&m_cacheMutex);
         const auto it = m_cache.constFind(key);
-        if (it != m_cache.constEnd() && it->expiry > QDateTime::currentDateTime())
+        if (it != m_cache.constEnd() && QDateTime::currentDateTime().msecsTo(it->expiry) > 0)
             return it->value;
     }
     const QVariant value = fn();
