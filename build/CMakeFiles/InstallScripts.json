@@ -1,7 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"/work/krunner-notion-tasks/build/cmake_install.cmake"
-	],
-	"Parallel" : false
-}

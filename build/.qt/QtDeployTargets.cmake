@@ -1,4 +1,0 @@
-set(__QT_DEPLOY_TARGET_krunner_notion_tasks_FILE /work/krunner-notion-tasks/build/bin/kf6/krunner/krunner_notion_tasks.so)
-set(__QT_DEPLOY_TARGET_krunner_notion_tasks_TYPE MODULE_LIBRARY)
-set(__QT_DEPLOY_TARGET_kcm_notion_tasks_FILE /work/krunner-notion-tasks/build/bin/kf6/krunner/kcms/kcm_notion_tasks.so)
-set(__QT_DEPLOY_TARGET_kcm_notion_tasks_TYPE MODULE_LIBRARY)

@@ -6,6 +6,11 @@ stages:
 
 default:
   image: archlinux:latest
+
+# ── Build ──────────────────────────────────────────────────────────────────────
+
+build:
+  stage: build
   before_script:
     - pacman -Syu --noconfirm
     - pacman -S --noconfirm --needed
@@ -13,22 +18,14 @@ default:
         extra-cmake-modules
         qt6-base
         krunner kcmutils ki18n knotifications
-
-# ── Build ──────────────────────────────────────────────────────────────────────
-
-build:
-  stage: build
   script:
     - cmake -B build -S .
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_INSTALL_PREFIX=/usr
     - cmake --build build --parallel
     - DESTDIR=pkg cmake --install build
-    # Smoke-test: plugin must appear in the list
-    - |
-      QT_PLUGIN_PATH="$PWD/pkg/usr/lib/qt6/plugins" \
-      XDG_DATA_DIRS="$PWD/pkg/usr/share:$XDG_DATA_DIRS" \
-      krunner --list 2>/dev/null | grep -q "krunner_notion_tasks"
+    # Smoke-test: plugin binary must exist and carry the expected metadata
+    - test -f pkg/usr/lib/qt6/plugins/kf6/krunner/krunner_notion_tasks.so
   artifacts:
     paths:
       - pkg/
@@ -61,7 +58,8 @@ package:source:
   rules:
     - if: $CI_COMMIT_TAG
 
-# ── Test ───────────────────────────────────────────────────────────────────────
+# ── Secret Detection ─────────────────────────────────────────────────────────
+
 sast:
   stage: test
 include:

@@ -19,7 +19,7 @@ while IFS= read -r file; do
     fi
 done < "$MANIFEST"
 
-CFG="$HOME/.config/krunner-notion-tasksrc"
+CFG="$HOME/.config/krunner-notion-tasks.conf"
 if [[ -f "$CFG" ]]; then
     read -r -p "Remove config file $CFG? [y/N] " confirm
     if [[ "${confirm,,}" == "y" ]]; then
