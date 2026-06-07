@@ -48,6 +48,8 @@ package:tarball:
 package:source:
   stage: package
   needs: []
+  before_script:
+    - pacman -Sy --noconfirm git
   script:
     - git archive --format=tar.gz --prefix="krunner-notion-tasks-${CI_COMMIT_TAG}/"
         -o "krunner-notion-tasks-${CI_COMMIT_TAG}-src.tar.gz" HEAD
