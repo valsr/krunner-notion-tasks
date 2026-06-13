@@ -76,6 +76,7 @@ NotionConfig::NotionConfig(QObject *parent, const KPluginMetaData &data)
     connect(m_ui->dbIdEdit,        &QLineEdit::textChanged,  this, markChanged);
     connect(m_ui->keywordEdit,     &QLineEdit::textChanged,  this, markChanged);
     connect(m_ui->projectEdit,     &QLineEdit::textChanged,  this, markChanged);
+    connect(m_ui->dueFieldEdit,    &QLineEdit::textChanged,  this, markChanged);
     connect(m_ui->templateEdit,    &QLineEdit::textChanged,  this, markChanged);
     connect(m_ui->projectsDbEdit,  &QLineEdit::textChanged,  this, markChanged);
 }
@@ -96,6 +97,7 @@ void NotionConfig::load()
     m_ui->projectsDbEdit->setText( notion.readEntry("projects_database_id", DEF_PROJECTS_ID));
     m_ui->keywordEdit->setText(    runner.readEntry("keyword",              DEF_KEYWORD));
     m_ui->projectEdit->setText(    runner.readEntry("default_project",      DEF_PROJECT));
+    m_ui->dueFieldEdit->setText(   runner.readEntry("due_field",            QStringLiteral("Due")));
     m_ui->templateEdit->setText(   runner.readEntry("template_id",          DEF_TEMPLATE));
 
     setNeedsSave(false);
@@ -114,6 +116,8 @@ void NotionConfig::save()
     const QString kw = m_ui->keywordEdit->text().trimmed();
     runner.writeEntry("keyword",         kw.isEmpty() ? DEF_KEYWORD : kw);
     runner.writeEntry("default_project", m_ui->projectEdit->text().trimmed());
+    const QString df = m_ui->dueFieldEdit->text().trimmed();
+    runner.writeEntry("due_field",       df.isEmpty() ? QStringLiteral("Due") : df);
     runner.writeEntry("template_id",     m_ui->templateEdit->text().trimmed());
 
     cfg->sync();
@@ -127,6 +131,7 @@ void NotionConfig::defaults()
     m_ui->projectsDbEdit->setText(DEF_PROJECTS_ID);
     m_ui->keywordEdit->setText(   DEF_KEYWORD);
     m_ui->projectEdit->setText(   DEF_PROJECT);
+    m_ui->dueFieldEdit->setText(  QStringLiteral("Due"));
     m_ui->templateEdit->setText(  DEF_TEMPLATE);
     setNeedsSave(true);
 }

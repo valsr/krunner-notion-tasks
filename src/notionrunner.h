@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <QHash>
 #include <QJsonArray>
+#include <QMap>
 #include <QMutex>
 #include <QVariant>
 
@@ -28,12 +29,13 @@ private:
         QStringList keywords;
         QString     defaultProject;
         QString     templateId;
+        QString     dueField;
     };
 
     struct ParsedQuery {
         QString taskName;
         QString priority;
-        QString dueDate;
+        QMap<QString, QStringList> fields; // Notion field name (or user-typed) → values
     };
 
     struct CacheEntry {
@@ -42,7 +44,7 @@ private:
     };
 
     Config      loadConfig() const;
-    ParsedQuery parseQuery(const QString &text) const;
+    ParsedQuery parseQuery(const QString &text, const QString &dueField) const;
     QString     toUuid(const QString &id) const;
 
     ApiResult<QByteArray> notionRequest(const QString &method, const QString &path,
