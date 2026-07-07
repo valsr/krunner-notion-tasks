@@ -51,7 +51,7 @@ sudo pacman -S python-dbus python-gobject
 **Install:**
 
 ```bash
-git clone https://github.com/you/krunner-notion-tasks.git
+git clone https://github.com/valsr/krunner-notion-tasks.git
 cd krunner-notion-tasks
 ./install.sh
 ```
