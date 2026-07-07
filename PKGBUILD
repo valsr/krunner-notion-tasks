@@ -1,10 +1,10 @@
 # Maintainer: vals <valsodarg@gmail.com>
 pkgname=krunner-notion-tasks-git
-pkgver=1.0.1
+pkgver=1.1.0
 pkgrel=1
 pkgdesc="KRunner plugin (Plasma 6) to add tasks to a Notion database"
 arch=('x86_64')
-url="https://gitlab.com/PLACEHOLDER/krunner-notion-tasks"
+url="https://github.com/valsr/krunner-notion-tasks"
 license=('GPL-2.0-or-later')
 depends=('krunner' 'kcmutils' 'knotifications')
 makedepends=('cmake' 'extra-cmake-modules' 'git')

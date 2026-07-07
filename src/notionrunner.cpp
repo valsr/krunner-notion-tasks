@@ -19,7 +19,6 @@
 
 K_PLUGIN_CLASS_WITH_JSON(NotionRunner, "notionrunner.json")
 
-
 static constexpr int PROJECT_TTL = 1800;
 
 static const QString CFG_FILE = QStringLiteral("krunner-notion-tasks.conf");
@@ -33,6 +32,7 @@ static const QString DEF_PROJECTS_ID = QStringLiteral("");
 static const QString DEF_PROJECT = QStringLiteral("Todos");
 static const QString DEF_TEMPLATE = QStringLiteral("");
 static const QString DEF_KEYWORD = QStringLiteral("task,todo,add task,add todo");
+static const QString DEF_DUE_FIELD = QStringLiteral("Due");
 
 NotionRunner::NotionRunner(QObject *parent, const KPluginMetaData &data)
     : KRunner::AbstractRunner(parent, data)
@@ -43,6 +43,17 @@ void NotionRunner::reloadConfiguration()
 {
     QMutexLocker lock(&m_cacheMutex);
     m_cache.clear();
+}
+
+static QString resolveDateValue(const QString &raw)
+{
+    const QString d = raw.toLower();
+    if (d == QLatin1String("today"))
+        return QDate::currentDate().toString(Qt::ISODate);
+    if (d == QLatin1String("tomorrow") || d == QLatin1String("tmr"))
+        return QDate::currentDate().addDays(1).toString(Qt::ISODate);
+    const QDate parsed = QDate::fromString(d, Qt::ISODate);
+    return parsed.isValid() ? d : QString();
 }
 
 NotionRunner::Config NotionRunner::loadConfig() const
@@ -64,10 +75,11 @@ NotionRunner::Config NotionRunner::loadConfig() const
         .keywords = keywords,
         .defaultProject = runner.readEntry("default_project", DEF_PROJECT),
         .templateId = runner.readEntry("template_id", DEF_TEMPLATE),
+        .dueField = runner.readEntry("due_field", DEF_DUE_FIELD),
     };
 }
 
-NotionRunner::ParsedQuery NotionRunner::parseQuery(const QString &text) const
+NotionRunner::ParsedQuery NotionRunner::parseQuery(const QString &text, const QString &dueField) const
 {
     static const QHash<QString, QString> priorityMap = {
         {QStringLiteral("high"), QStringLiteral("High")},
@@ -90,28 +102,37 @@ NotionRunner::ParsedQuery NotionRunner::parseQuery(const QString &text) const
         working.remove(pm.capturedStart(), pm.capturedLength());
     }
 
-    static const QRegularExpression reDue(QStringLiteral("@(\\S+)"));
-    const auto dm = reDue.match(working);
-    if (dm.hasMatch())
+    static const QRegularExpression reAt(QStringLiteral("@(\\S+)"));
+    QRegularExpressionMatchIterator atIt = reAt.globalMatch(working);
+
+    struct Span { qsizetype start; qsizetype len; };
+    QList<Span> toRemove;
+
+    while (atIt.hasNext())
     {
-        const QString d = dm.captured(1).toLower();
-        const QDate today = QDate::currentDate();
-        if (d == QStringLiteral("today"))
+        const auto am = atIt.next();
+        toRemove.prepend({am.capturedStart(), am.capturedLength()});
+
+        const QString token = am.captured(1);
+        const int colon = token.indexOf(QLatin1Char(':'));
+        if (colon >= 0)
         {
-            pq.dueDate = today.toString(Qt::ISODate);
-        }
-        else if (d == QStringLiteral("tomorrow") || d == QStringLiteral("tmr"))
-        {
-            pq.dueDate = today.addDays(1).toString(Qt::ISODate);
+            const QString field = token.left(colon);
+            const QString value = token.mid(colon + 1);
+            if (!field.isEmpty() && !value.isEmpty())
+                pq.fields[field] << value;
         }
         else
         {
-            const QDate parsed = QDate::fromString(d, Qt::ISODate);
-            if (parsed.isValid())
-                pq.dueDate = d;
+            // Bare @value → due date
+            const QString dateStr = resolveDateValue(token);
+            if (!dateStr.isEmpty())
+                pq.fields[dueField] = {dateStr};
         }
-        working.remove(dm.capturedStart(), dm.capturedLength());
     }
+
+    for (const auto &span : toRemove)
+        working.remove(span.start, span.len);
 
     pq.taskName = working.simplified();
     return pq;
@@ -227,11 +248,6 @@ ApiResult<bool> NotionRunner::addNotionTask(const Config &cfg, const ParsedQuery
             {QStringLiteral("select"),
              QJsonObject{{QStringLiteral("name"), pq.priority}}}};
 
-    if (!pq.dueDate.isEmpty())
-        properties[QStringLiteral("Due")] = QJsonObject{
-            {QStringLiteral("date"),
-             QJsonObject{{QStringLiteral("start"), pq.dueDate}}}};
-
     if (!cfg.defaultProject.isEmpty() && !cfg.projectsDbId.isEmpty())
     {
         const QString id = resolveProjectId(cfg, cfg.defaultProject);
@@ -239,6 +255,32 @@ ApiResult<bool> NotionRunner::addNotionTask(const Config &cfg, const ParsedQuery
             properties[QStringLiteral("Project")] = QJsonObject{
                 {QStringLiteral("relation"),
                  QJsonArray{QJsonObject{{QStringLiteral("id"), id}}}}};
+    }
+
+    for (auto it = pq.fields.constBegin(); it != pq.fields.constEnd(); ++it)
+    {
+        const QString &fieldName = it.key();
+        const QStringList &values = it.value();
+        if (values.isEmpty())
+            continue;
+
+        if (fieldName.compare(cfg.dueField, Qt::CaseInsensitive) == 0)
+        {
+            const QString dateStr = resolveDateValue(values.first());
+            if (!dateStr.isEmpty())
+                properties[fieldName] = QJsonObject{
+                    {QStringLiteral("date"),
+                     QJsonObject{{QStringLiteral("start"), dateStr}}}};
+        }
+        else
+        {
+            properties[fieldName] = QJsonObject{
+                {QStringLiteral("rich_text"),
+                 QJsonArray{QJsonObject{
+                     {QStringLiteral("text"),
+                      QJsonObject{{QStringLiteral("content"),
+                                   values.join(QStringLiteral(", "))}}}}}}};
+        }
     }
 
     QJsonObject payload{
@@ -298,7 +340,7 @@ void NotionRunner::match(KRunner::RunnerContext &context)
     if (taskText.isEmpty())
         return;
 
-    const ParsedQuery pq = parseQuery(taskText);
+    const ParsedQuery pq = parseQuery(taskText, cfg.dueField);
     if (pq.taskName.isEmpty())
     {
         return;
@@ -316,8 +358,8 @@ void NotionRunner::match(KRunner::RunnerContext &context)
             parts << cfg.defaultProject;
         if (!pq.priority.isEmpty())
             parts << i18n("Priority: %1", pq.priority);
-        if (!pq.dueDate.isEmpty())
-            parts << i18n("Due: %1", pq.dueDate);
+        for (auto it = pq.fields.constBegin(); it != pq.fields.constEnd(); ++it)
+            parts << QStringLiteral("%1: %2").arg(it.key(), it.value().join(QLatin1Char(',')));
         subtext = parts.isEmpty() ? i18n("Add to Notion Tasks")
                                   : parts.join(QStringLiteral(" · "));
     }
@@ -349,7 +391,7 @@ void NotionRunner::run(const KRunner::RunnerContext &context, const KRunner::Que
         return;
     }
 
-    const ParsedQuery pq = parseQuery(match.data().toString());
+    const ParsedQuery pq = parseQuery(match.data().toString(), cfg.dueField);
     if (pq.taskName.isEmpty())
     {
         return;
@@ -363,8 +405,8 @@ void NotionRunner::run(const KRunner::RunnerContext &context, const KRunner::Que
             parts << cfg.defaultProject;
         if (!pq.priority.isEmpty())
             parts << pq.priority;
-        if (!pq.dueDate.isEmpty())
-            parts << pq.dueDate;
+        for (auto it = pq.fields.constBegin(); it != pq.fields.constEnd(); ++it)
+            parts << QStringLiteral("%1: %2").arg(it.key(), it.value().join(QLatin1Char(',')));
 
         auto *n = new KNotification(QStringLiteral("taskAdded"), KNotification::CloseOnTimeout);
         n->setComponentName(NOTIFY_COMP);
